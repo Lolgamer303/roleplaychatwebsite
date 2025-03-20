@@ -6,7 +6,7 @@ const medievalSharp = MedievalSharp({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
-  variable: "--medievalSharp",
+  variable: "--medievalSharp", // Define the font variable
 });
 
 export const metadata: Metadata = {
@@ -20,12 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="font-sans">
-      <body
-        className={`${medievalSharp.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html lang="en" className={medievalSharp.variable}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
