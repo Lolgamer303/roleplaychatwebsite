@@ -10,6 +10,7 @@
   --color-custom-accent-tertiary: #2E4A3D; /* Deep forest green for tertiary accents */
   --color-custom-border: #4A4A4A; /* Subtle gray for borders */
   --color-custom-hover: #5A3E6B; /* Royal purple for hover effects */
+  --color-custom-click: #3E6B5A; /* Dark teal for click effects */
   --color-custom-shadow: rgba(0, 0, 0, 0.5); /* Slightly darker shadow for depth */
   --font-sans: var(--medievalSharp); /* Use the font variable */
   --font-mono: var(--medievalSharp);
