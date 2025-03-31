@@ -1,23 +1,83 @@
 @import "tailwindcss";
 
 @theme {
-  --color-custom-background-primary: #0D0D0D; /* Deep black for the main background */
-  --color-custom-background-secondary: #1A1A1A; /* Slightly lighter black for contrast */
-  --color-custom-text-primary: #E4D8B4; /* Warm parchment-like text color */
-  --color-custom-text-secondary:  #FFFFF0; /* Ivory white accent */
-  --color-custom-accent-primary: #8B0000; /* Dark crimson for accents */
-  --color-custom-accent-secondary: #70543E; /* Bronze-like accent */
-  --color-custom-accent-tertiary: #2E4A3D; /* Deep forest green for tertiary accents */
-  --color-custom-border: #4A4A4A; /* Subtle gray for borders */
-  --color-custom-hover: #5A3E6B; /* Royal purple for hover effects */
-  --color-custom-click: #3E6B5A; /* Dark teal for click effects */
-  --color-custom-shadow: rgba(0, 0, 0, 0.5); /* Slightly darker shadow for depth */
-  --font-sans: var(--medievalSharp); /* Use the font variable */
-  --font-mono: var(--medievalSharp);
+  --color-custom-background-primary: #0D0D0D;
+  --color-custom-background-secondary: #1A1A1A;
+  --color-custom-text-primary: #E4D8B4;
+  --color-custom-text-secondary: #FFFFF0;
+  --color-custom-accent-primary: #8B0000;
+  --color-custom-accent-secondary: #70543E;
+  --color-custom-accent-tertiary: #2E4A3D;
+  --color-custom-border: #4A4A4A;
+  --color-custom-hover: #5A3E6B;
+  --color-custom-click: #3E6B5A;
+  --color-custom-shadow: rgba(0, 0, 0, 0.5);
+  --font-sans: var(--default-font);
+  --font-mono: var(--imfellenglish-font);
+  --font-serif: 'OldLondon';
+
+  /* Define the custom animation variable */
+  --animate-scale-in-hor-center: scale-in-hor-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  --animate-heartbeat: heartbeat 1.5s ease-in-out 1s infinite both;
+  --animate-fadein: fadein 1.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  --animate-heartbeat-fadein: fadein 1.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) forwards, heartbeat 1.5s ease-in-out 1s infinite;
+}
+
+@font-face {
+  font-family: 'OldLondon';
+  src: url('/fonts/OldLondon.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@keyframes scale-in-hor-center {
+  0% {
+    transform: scaleX(0);
+    transform-origin: 50% 50%;
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: 50% 50%;
+    opacity: 1;
+  }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes heartbeat {
+  from {
+    transform: scale(1);
+    transform-origin: center center;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    transform: scale(0.91);
+    animation-timing-function: ease-in;
+  }
+  17% {
+    transform: scale(0.98);
+    animation-timing-function: ease-out;
+  }
+  33% {
+    transform: scale(0.87);
+    animation-timing-function: ease-in;
+  }
+  45% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+  }
 }
 
 body {
-  background: var(--color-custom-background-primary);
-  font-family: var(--font-sans); /* Apply the font variable */
-  color: var(--color-custom-text-primary); /* Set text color */
+  background: var(--color-custom-background-secondary);
+  font-family: var(--font-sans);
+  color: var(--color-custom-text-primary);
 }

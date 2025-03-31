@@ -1,13 +1,34 @@
 import type { Metadata } from "next";
-import { MedievalSharp } from "next/font/google";
+import { Almendra_SC, IM_Fell_English, MedievalSharp, Wix_Madefor_Display } from "next/font/google";
 import "./globals.css";
 import Providers from "./components/Provider";
 
-const medievalSharp = MedievalSharp({
+const defaultfont = Wix_Madefor_Display({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
-  variable: "--medievalSharp", // Define the font variable
+  variable: "--default-font", // Define the font variable
+});
+
+const medievalfont = MedievalSharp({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--medieval-font", // Define the font variable
+});
+
+const alemendra = Almendra_SC({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--alemendra-font", // Define the font variable
+});
+
+const imefellenglish = IM_Fell_English({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--imfellenglish-font", // Define the font variable
 });
 
 export const metadata: Metadata = {
@@ -21,12 +42,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={medievalSharp.variable}>
+    <html lang="en" className={`${defaultfont.variable} ${medievalfont.variable} ${alemendra.variable} ${imefellenglish.variable}`}>
       <body className="antialiased">
         <Providers>
           {children}
         </Providers>
-        </body>
+      </body>
     </html>
   );
 }

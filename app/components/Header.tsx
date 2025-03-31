@@ -2,58 +2,108 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import Image from "next/image";
 
-export default async function Header() {
+interface HeaderProps {
+  pathname: string;
+}
+
+export default async function Header({ pathname }: HeaderProps) {
   const session = await getServerSession();
+
   return (
-    <div className="absolute border-b-2 border-custom-border top-0 left-0 w-full text-custom-text-primary pt-4 px-4 flex justify-between items-center">
-      <div className="text-3xl border-r-2 border-custom-border pr-3">
-        <h1>RoleplayChat</h1>
+    <div className="z-[10] bg-custom-background-primary fixed border-b-2 border-custom-border top-0 left-0 w-full text-custom-text-primary p-2 flex justify-between items-center">
+      <div className="text-[18px] hover:border-custom-text-secondary transition duration-300 group font-bold border-r-2 border-custom-border pr-3 w-30">
+        <Link href="/">RoleplayChat</Link>
       </div>
-      <div className="flex-grow text-center text-2xl font-bold">
-        <Link href="" className="px-7 border-r-2 border-custom-border text-custom-text-secondary">
-          Home
-        </Link>
-        <Link href="" className="px-7 border-r-2 border-custom-border text-custom-text-secondary">Chat</Link>
-        <Link href="" className="px-7 border-r-2 border-custom-border text-custom-text-secondary">API Docs</Link>
-        <Link href="" className="px-7 text-custom-text-secondary">API Keys</Link>
+      <div className="flex-grow text-center text-[16px] relative">
+        <div className="relative">
+          <div className="flex justify-center">
+            <Link
+              href="/"
+              className="px-7 text-custom-text-secondary group relative active:scale-90 active:text-custom-text-primary"
+            >
+              Home
+              <span
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                  pathname === "/" ? "w-10/12" : "w-0 group-hover:w-10/12"
+                }`}
+              ></span>
+            </Link>
+            <Link
+              href="/chat"
+              className="px-7 text-custom-text-secondary group relative active:scale-90 active:text-custom-text-primary"
+            >
+              Chat
+              <span
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                  pathname === "/chat" ? "w-10/12" : "w-0 group-hover:w-10/12"
+                }`}
+              ></span>
+            </Link>
+            <Link
+              href="/docs"
+              className="px-7 text-custom-text-secondary group relative active:scale-90 active:text-custom-text-primary"
+            >
+              API Docs
+              <span
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                  pathname === "/docs" ? "w-10/12" : "w-0 group-hover:w-10/12"
+                }`}
+              ></span>
+            </Link>
+            <Link
+              href="/keys"
+              className="px-7 text-custom-text-secondary group relative active:scale-90 active:text-custom-text-primary"
+            >
+              API Keys
+              <span
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                  pathname === "/keys" ? "w-10/12" : "w-0 group-hover:w-10/12"
+                }`}
+              ></span>
+            </Link>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-end border-l-2 border-custom-border pl-3">
+      <div className="flex justify-end border-l-2 border-custom-border pl-3 transition duration-300 hover:border-custom-text-secondary">
         {session ? (
           <div className="flex items-center">
             {session.user.image ? (
-              <Image
-                className="rounded-full"
-                src={session.user.image}
-                alt="User Image"
-                width={40}
-                height={40}
-              />
+              <>
+                <Image
+                  className="rounded-full"
+                  data-tooltip
+                  src={session.user.image}
+                  alt="User Image"
+                  width={40}
+                  height={40}
+                />
+              </>
             ) : (
-              <Image
-                className="rounded-full"
-                src="https://lh3.googleusercontent.com/a/default-user"
-                alt="User Image"
-                width={40}
-                height={40}
-              />
+              <div className="relative group">
+                <Image
+                  className="rounded-full"
+                  src="https://lh3.googleusercontent.com/a/default-user"
+                  alt="User Image"
+                  width={40}
+                  height={40}
+                />
+                <button
+                  className="absolute flex items-center justify-center bg-custom-background-secondary text-custom-text-secondary text-[14px] font-bold rounded-md w-[40px] h-[40px] top-[50px] left-0 z-[9999]"
+                >
+                  Disconnect
+                </button>
+              </div>
             )}
-            <p className="pl-2">{session.user.name}</p>
           </div>
         ) : (
-          <LoginButton />
+          <Link
+            href="api/auth/signin"
+            className="h-10 w-30 text-[18px] flex items-center"
+          >
+            Login
+          </Link>
         )}
       </div>
     </div>
-  );
-}
-
-function LoginButton() {
-  return (
-    <Link
-      href="api/auth/signin"
-      className=" bg-custom-background-secondary border-1 border-custom-border items-center justify-center flex hover:border-custom-text-primary text-custom-text-primary rounded-md text-[25px] duration-200 hover:bg-custom-hover active:bg-custom-click active:scale-90 hover:scale-110 hover:rotate-6 w-24 h-12"
-    >
-      Login
-    </Link>
   );
 }

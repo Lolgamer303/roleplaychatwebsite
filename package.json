@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
+    "flowbite": "^3.1.2",
     "next": "^15.2.3",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
