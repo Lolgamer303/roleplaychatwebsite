@@ -64,20 +64,26 @@ export default async function Header({ pathname }: HeaderProps) {
           </div>
         </div>
       </div>
-      <div className="flex justify-end border-l-2 border-custom-border pl-3 transition duration-300 hover:border-custom-text-secondary">
+      <div className="flex relative group justify-end border-l-2 border-custom-border pl-3 transition duration-300 hover:border-custom-text-secondary">
         {session ? (
           <div className="flex items-center">
             {session.user.image ? (
-              <>
+              <div className="relative group">
                 <Image
                   className="rounded-full"
-                  data-tooltip
                   src={session.user.image}
                   alt="User Image"
                   width={40}
                   height={40}
                 />
-              </>
+                <Link
+                  className="absolute opacity-0 translate-y-[-25px] group-hover:translate-y-3.5 group-hover:opacity-100 flex items-center justify-center bg-custom-background-primary text-red-500 text-[12px] font-bold rounded-md w-[72px] h-[34px] top-[40px] left-[-30px] z-[9999] transition-all duration-300"
+                  href={`/api/auth/signout`}
+                >
+                  Disconnect
+                  <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 translate-y-[2px] w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-custom-background-primary opacity-70"></span>
+                </Link>
+              </div>
             ) : (
               <div className="relative group">
                 <Image
@@ -87,11 +93,6 @@ export default async function Header({ pathname }: HeaderProps) {
                   width={40}
                   height={40}
                 />
-                <button
-                  className="absolute flex items-center justify-center bg-custom-background-secondary text-custom-text-secondary text-[14px] font-bold rounded-md w-[40px] h-[40px] top-[50px] left-0 z-[9999]"
-                >
-                  Disconnect
-                </button>
               </div>
             )}
           </div>
