@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-import { Almendra_SC, IM_Fell_English, MedievalSharp, Wix_Madefor_Display } from "next/font/google";
+import {
+  Almendra_SC,
+  IM_Fell_English,
+  MedievalSharp,
+  Wix_Madefor_Display,
+} from "next/font/google";
 import "./globals.css";
 import Providers from "./components/Provider";
+import { ThemeProvider } from "./ThemeProvider";
 
 const defaultfont = Wix_Madefor_Display({
   weight: "400",
@@ -41,11 +47,40 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const setInitialTheme = `
+              (function() {
+                try {
+                  const savedTheme = localStorage.getItem('theme');
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                  document.documentElement.setAttribute('data-theme', theme);
+                  if (theme === 'dark') {
+                    document.documentElement.style.setProperty('--color-custom-background-primary', 'var(--color-custom-background-primary-dark)');
+                    document.documentElement.style.setProperty('--color-custom-background-secondary', 'var(--color-custom-background-secondary-dark)');
+                    document.documentElement.style.setProperty('--color-custom-text-primary', 'var(--color-custom-text-primary-dark)');
+                    document.documentElement.style.setProperty('--color-custom-text-secondary', 'var(--color-custom-text-secondary-dark)');
+                  } else {
+                    document.documentElement.style.setProperty('--color-custom-background-primary', 'var(--color-custom-background-primary-light)');
+                    document.documentElement.style.setProperty('--color-custom-background-secondary', 'var(--color-custom-background-secondary-light)');
+                    document.documentElement.style.setProperty('--color-custom-text-primary', 'var(--color-custom-text-primary-light)');
+                    document.documentElement.style.setProperty('--color-custom-text-secondary', 'var(--color-custom-text-secondary-light)');
+                  }
+                  console.log('Applied theme:', theme);
+                } catch (e) {
+                  console.error('Error applying theme:', e);
+                }
+              })();`;
   return (
-    <html lang="en" className={`${defaultfont.variable} ${medievalfont.variable} ${alemendra.variable} ${imefellenglish.variable}`}>
+    <html
+      lang="en"
+      className={`${defaultfont.variable} ${medievalfont.variable} ${alemendra.variable} ${imefellenglish.variable}`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{__html: setInitialTheme}}/>
+      </head>
       <body className="antialiased">
         <Providers>
-          {children}
+          <ThemeProvider>{children}</ThemeProvider>
         </Providers>
       </body>
     </html>

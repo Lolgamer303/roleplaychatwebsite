@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import Image from "next/image";
+import ThemeToggle from "./ThemeToggle";
 
 interface HeaderProps {
   pathname: string;
@@ -23,7 +24,7 @@ export default async function Header({ pathname }: HeaderProps) {
             >
               Home
               <span
-                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-custom-text-secondary transition-all duration-300 ease-in-out ${
                   pathname === "/" ? "w-10/12" : "w-0 group-hover:w-10/12"
                 }`}
               ></span>
@@ -34,7 +35,7 @@ export default async function Header({ pathname }: HeaderProps) {
             >
               Chat
               <span
-                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-custom-text-secondary transition-all duration-300 ease-in-out ${
                   pathname === "/chat" ? "w-10/12" : "w-0 group-hover:w-10/12"
                 }`}
               ></span>
@@ -45,7 +46,7 @@ export default async function Header({ pathname }: HeaderProps) {
             >
               API Docs
               <span
-                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-custom-text-secondary transition-all duration-300 ease-in-out ${
                   pathname === "/docs" ? "w-10/12" : "w-0 group-hover:w-10/12"
                 }`}
               ></span>
@@ -56,13 +57,16 @@ export default async function Header({ pathname }: HeaderProps) {
             >
               API Keys
               <span
-                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+                className={`absolute bottom-[-17.5px] left-1/2 transform -translate-x-1/2 h-[1.5px] bg-custom-text-secondary transition-all duration-300 ease-in-out ${
                   pathname === "/keys" ? "w-10/12" : "w-0 group-hover:w-10/12"
                 }`}
               ></span>
             </Link>
           </div>
         </div>
+      </div>
+      <div className="justify-end mr-3">
+        <ThemeToggle />
       </div>
       <div className="flex relative group justify-end border-l-2 border-custom-border pl-3 transition duration-300 hover:border-custom-text-secondary">
         {session ? (

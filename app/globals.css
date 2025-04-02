@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-custom-background-primary: #0D0D0D;
-  --color-custom-background-secondary: #1A1A1A;
-  --color-custom-text-primary: #E4D8B4;
-  --color-custom-text-secondary: #FFFFF0;
-  --color-custom-accent-primary: #8B0000;
-  --color-custom-accent-secondary: #70543E;
+  --color-custom-background-primary: var(--color-custom-background-primary-light);
+  --color-custom-background-secondary: var(--color-custom-background-secondary-light);
+  --color-custom-text-primary: var(--color-custom-text-primary-light);
+  --color-custom-text-secondary: var(--color-custom-text-secondary-light);
+  --color-custom-accent-primary: var(--color-custom-accent-primary-light);
+  --color-custom-accent-secondary: var(--color-custom-accent-secondary-light);
   --color-custom-accent-tertiary: #2E4A3D;
-  --color-custom-border: #4A4A4A;
-  --color-custom-hover: #5A3E6B;
+  --color-custom-border: var(--color-custom-border-light);
+  --color-custom-hover: var(--color-custom-hover-light);
   --color-custom-click: #3E6B5A;
   --color-custom-shadow: rgba(0, 0, 0, 0.5);
   --font-sans: var(--default-font);
@@ -21,6 +21,26 @@
   --animate-heartbeat: heartbeat 1.5s ease-in-out 1s infinite both;
   --animate-fadein: fadein 1.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
   --animate-heartbeat-fadein: fadein 1.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) forwards, heartbeat 1.5s ease-in-out 1s infinite;
+
+  /* Light Theme Variables */
+  --color-custom-background-primary-light: #ffffff;
+  --color-custom-background-secondary-light: #f9f9f9;
+  --color-custom-text-primary-light: #1a1a1a;
+  --color-custom-text-secondary-light: #333333;
+  --color-custom-accent-primary-light: #007bff;
+  --color-custom-accent-secondary-light: #6c757d;
+  --color-custom-border-light: #e0e0e0;
+  --color-custom-hover-light: #0056b3;
+
+  /* Dark Theme Variables */
+  --color-custom-background-primary-dark: #0d0d0d;
+  --color-custom-background-secondary-dark: #1a1a1a;
+  --color-custom-text-primary-dark: #e4d8b4;
+  --color-custom-text-secondary-dark: #fffff0;
+  --color-custom-accent-primary-dark: #8b0000;
+  --color-custom-accent-secondary-dark: #70543e;
+  --color-custom-border-dark: #4a4a4a;
+  --color-custom-hover-dark: #5a3e6b;
 }
 
 @font-face {
@@ -77,7 +97,7 @@
 }
 
 body {
-  background: var(--color-custom-background-secondary);
   font-family: var(--font-sans);
+  background-color: var(--color-custom-background-secondary);
   color: var(--color-custom-text-primary);
 }
