@@ -56,33 +56,33 @@ export const options: NextAuthOptions = ({
             return true;
         },
         session: async ({ session, token }) => {
-            if (!session.user || !session.user.email) {
-                throw new Error("No session email or user");
+            if (token.id) {
+                session.user = {
+                    ...session.user, // Keep existing fields like name, email, and image
+                    id: token.id,    // Add the user's database ID
+                };
+            } else {
+                console.error("Token does not contain an ID");
             }
-
-            // Fetch the user's ID from the database using Prisma
-            const userRecord = await prisma.user.findUnique({
-                where: {
-                    email: session.user.email,
-                },
-                select: {
-                    id: true,
-                },
-            });
-
-            // If no user is found, handle it (e.g., throw an error or return null)
-            if (!userRecord || !userRecord.id) {
-                throw new Error("No user found with this email");
-            }
-
-            // Attach the user's ID to the session.user object if a token exists
-            session.user.id = userRecord.id.toString(); // Convert user ID to string and set it in the session
-
-            // Return the updated session object
+            console.log("Session in session callback:", session);
             return session;
-        },
+        },  
         jwt: async ({ token, user }) => {
-            return token; // Return the token object with the `id`
+            if (user) {
+                if (!user.email) {
+                    throw new Error("No user email");
+                }
+                const userRecord = await prisma.user.findUnique({
+                    where: { email: user.email },
+                    select: { id: true },
+                });
+
+                if (userRecord && userRecord.id) {
+                    token.id = userRecord.id;
+                }
+            }
+            console.log("Token in jwt callback:", token);
+            return token;
         },
     },
     theme: {

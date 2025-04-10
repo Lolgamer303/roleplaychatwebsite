@@ -19,7 +19,8 @@ model User {
 model ApiKey {
     id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
-    key       String   @unique
+    key       String   
+    name      String
     userId    Int
     user      User     @relation(fields: [userId], references: [id])
 }

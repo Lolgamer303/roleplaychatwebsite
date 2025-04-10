@@ -9,7 +9,6 @@ interface HeaderProps {
 
 export default async function Header({ pathname }: HeaderProps) {
   const session = await getServerSession();
-
   return (
     <div className="z-[10] bg-custom-background-primary fixed border-b-2 border-custom-border top-0 left-0 w-full text-custom-text-primary p-2 flex justify-between items-center">
       <div className="text-[18px] hover:border-custom-text-secondary transition duration-300 group font-bold border-r-2 border-custom-border pr-3 w-30">

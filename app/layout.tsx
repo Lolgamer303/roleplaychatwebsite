@@ -8,6 +8,7 @@ import {
 import "./globals.css";
 import Providers from "./components/Provider";
 import { ThemeProvider } from "./ThemeProvider";
+import ClientSessionProvider from "./ClientSessionProvider";
 
 const defaultfont = Wix_Madefor_Display({
   weight: "400",
@@ -73,6 +74,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning={true}
       className={`${defaultfont.variable} ${medievalfont.variable} ${alemendra.variable} ${imefellenglish.variable}`}
     >
       <head>
@@ -80,7 +82,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Providers>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ClientSessionProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ClientSessionProvider>
         </Providers>
       </body>
     </html>
