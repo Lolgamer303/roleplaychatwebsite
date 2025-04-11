@@ -10,8 +10,8 @@ export default function Home() {
           Forge your own adventure with an ai gamemaster !
         </h1>
         <p className="text-custom-text-secondary text-xl animate-scale-in-hor-center">
-          " Chat with an AI Dungeon Master, generate stories, and manage your
-          campaigns — all in one place! "
+        &quot; Chat with an AI Dungeon Master, generate stories, and manage your
+          campaigns — all in one place! &quot;
         </p>
         <Link
           href={"/chat"}
@@ -27,28 +27,28 @@ export default function Home() {
           <span className="text-4xl">🔮</span>
           <h2 className="text-2xl font-bold mt-2">AI-Powered Storytelling</h2>
           <p className="text-custom-text-secondary mt-1">
-            "The AI adapts to your choices and gameplay."
+          &quot;The AI adapts to your choices and gameplay.&quot;
           </p>
         </div>
         <div className="flex flex-col items-center text-center">
           <span className="text-4xl">🎲</span>
           <h2 className="text-2xl font-bold mt-2">Dice Rolling & Combat</h2>
           <p className="text-custom-text-secondary mt-1">
-            "Integrated D&D mechanics to enhance gameplay."
+          &quot;Integrated D&D mechanics to enhance gameplay.&quot;
           </p>
         </div>
         <div className="flex flex-col items-center text-center">
           <span className="text-4xl">📜</span>
           <h2 className="text-2xl font-bold mt-2">Persistent Campaigns</h2>
           <p className="text-custom-text-secondary mt-1">
-            "Save and continue your adventures anytime."
+          &quot;Save and continue your adventures anytime.&quot;
           </p>
         </div>
         <div className="flex flex-col items-center text-center">
           <span className="text-4xl">🛠</span>
           <h2 className="text-2xl font-bold mt-2">Developer API</h2>
           <p className="text-custom-text-secondary mt-1">
-            "Access AI storytelling for your own apps."
+          &quot;Access AI storytelling for your own apps.&quot;
           </p>
         </div>
       </div>
