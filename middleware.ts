@@ -15,6 +15,6 @@ export default withAuth(
     }
   );
   export const config = {
-    matcher: ["/chat"], // Matches all routes
+    matcher: ["/chat", "/keys"],
   };
 console.log("Middleware loaded"); // Debug log
