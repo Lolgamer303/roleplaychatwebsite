@@ -14,6 +14,7 @@ model User {
     name      String?
     image     String?
     apiKeys   ApiKey[]
+    campaigns Campaign[]
 }
 
 model ApiKey {
@@ -22,5 +23,26 @@ model ApiKey {
     key       String   
     name      String
     userId    Int
+    campaigns Campaign[]
     user      User     @relation(fields: [userId], references: [id])
+}
+model Campaign {
+    id        String  @id @default(uuid())
+    createdAt DateTime @default(now())
+    name      String
+    book      String
+    prompt    String
+    userId    Int?
+    history   Chat[]
+    apiKeyId  Int?
+    apiKey    ApiKey?   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+    user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+model Chat {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    campaignId String
+    campaign  Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+    message   String
+    response  String
 }
