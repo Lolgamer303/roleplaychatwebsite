@@ -2,6 +2,7 @@
 
 import prisma from "@/app/lib/db";
 import { options } from "@/auth";
+import { getCampaigns } from "@/roleplaychatAPI";
 import crypto from "crypto";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -62,4 +63,20 @@ function generateKey(): string {
     const uuid = crypto.randomUUID(); // Generate a UUID
     const hash = crypto.createHash('sha256').update(uuid).digest('base64'); // Hash the UUID and encode it in base64
     return hash;
+}
+
+export async function getServerCampaigns(formdata: FormData) {
+    const userId = formdata.get("userId");
+    if (!userId || typeof userId !== "string") {
+        throw new Error("User ID not found");
+    }
+    return getCampaigns(userId)
+        .then((response) => {
+            console.log("Campaigns: ", response);
+        }
+        )
+        .catch((error) => {
+            console.error("Error fetching campaigns: ", error);
+        }
+        );
 }
