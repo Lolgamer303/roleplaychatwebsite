@@ -2,7 +2,7 @@
 
 import prisma from "@/app/lib/db";
 import { options } from "@/auth";
-import { getCampaigns } from "@/roleplaychatAPI";
+import { createCampaign, deleteCampaign, editCampaign, getCampaigns } from "@/roleplaychatAPI";
 import crypto from "crypto";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -25,7 +25,7 @@ export async function createApikey(formdata: FormData) {
         throw new Error(`Invalid user ID, ${userId}, session: ${JSON.stringify(session)}`);
     }
 
-    const apiKey = await prisma.apiKey.create({
+    await prisma.apiKey.create({
         data: {
             key: generateKey(),
             name: keyName,
@@ -50,7 +50,7 @@ export async function deleteApikey(formdata: FormData) {
     if (!userId || typeof userId !== "number") {
         throw new Error(`Invalid user ID, ${userId}, session: ${JSON.stringify(session)}`);
     }
-    const apiKey = await prisma.apiKey.deleteMany({
+    await prisma.apiKey.deleteMany({
         where: {
             key: key,
             userId: userId,
@@ -70,9 +70,85 @@ export async function getServerCampaigns(formdata: FormData) {
     if (!userId || typeof userId !== "string") {
         throw new Error("User ID not found");
     }
+
     return getCampaigns(userId)
         .then((response) => {
             console.log("Campaigns: ", response);
+            revalidatePath("/chat");
+            return response; // Ensure the response is returned
+        })
+        .catch((error) => {
+            console.error("Error fetching campaigns: ", error);
+            throw error; // Re-throw the error to propagate it
+        });
+}
+export async function createServerCampaign(formdata: FormData) {
+    const userId = formdata.get("userId");
+    const name = formdata.get("name");
+    const book = formdata.get("book");
+
+    if (!userId || typeof userId !== "string") {
+        throw new Error("User ID not found");
+    }
+    if (!name || typeof name !== "string") {
+        throw new Error("Name not found");
+    }
+    if (!book || typeof book !== "string") {
+        throw new Error("Book not found");
+    }
+
+    return createCampaign(userId, name, book)
+        .then((response) => {
+            console.log("Campaigns: ", response);
+            revalidatePath("/chat");
+        }
+        )
+        .catch((error) => {
+            console.error("Error fetching campaigns: ", error);
+        }
+        );
+}
+export async function deleteServerCampaign(formdata: FormData) {
+    const userId = formdata.get("userId");
+    const campaignId = formdata.get("campaignId");
+
+    if (!userId || typeof userId !== "string") {
+        throw new Error("User ID not found");
+    }
+    if (!campaignId || typeof campaignId !== "string") {
+        throw new Error("Campaign ID not found");
+    }
+
+    return deleteCampaign(userId, campaignId)
+        .then((response) => {
+            console.log("Campaigns: ", response);
+            revalidatePath("/chat");
+        }
+        )
+        .catch((error) => {
+            console.error("Error fetching campaigns: ", error);
+        }
+        );
+}
+export async function editServerCampaign(formdata: FormData) {
+    const userId = formdata.get("userId");
+    const campaignId = formdata.get("campaignId");
+    const name = formdata.get("name");
+
+    if (!userId || typeof userId !== "string") {
+        throw new Error("User ID not found");
+    }
+    if (!campaignId || typeof campaignId !== "string") {
+        throw new Error("Campaign ID not found");
+    }
+    if (!name || typeof name !== "string") {
+        throw new Error("Name not found");
+    }
+
+    return editCampaign(userId, campaignId, name)
+        .then((response) => {
+            console.log("Campaigns: ", response);
+            revalidatePath("/chat");
         }
         )
         .catch((error) => {

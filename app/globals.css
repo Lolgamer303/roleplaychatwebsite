@@ -21,6 +21,8 @@
   --animate-heartbeat: heartbeat 1.5s ease-in-out 1s infinite both;
   --animate-fadein: fadein 1.2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
   --animate-heartbeat-fadein: fadein 1.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) forwards, heartbeat 1.5s ease-in-out 1s infinite;
+  --animate-reload-spin: reload-spin 1s linear infinite;
+  --animate-reload-spin-bezier: reload-spin 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) infinite;
 
   /* Light Theme Variables */
   --color-custom-background-primary-light: #ffffff;
@@ -69,6 +71,15 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes reload-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

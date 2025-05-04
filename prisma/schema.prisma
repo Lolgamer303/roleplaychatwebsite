@@ -14,7 +14,6 @@ model User {
     name      String?
     image     String?
     apiKeys   ApiKey[]
-    campaigns Campaign[]
 }
 
 model ApiKey {
@@ -36,7 +35,6 @@ model Campaign {
     history   Chat[]
     apiKeyId  Int?
     apiKey    ApiKey?   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
-    user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 model Chat {
     id        Int      @id @default(autoincrement())
