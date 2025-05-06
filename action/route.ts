@@ -2,7 +2,7 @@
 
 import prisma from "@/app/lib/db";
 import { options } from "@/auth";
-import { createCampaign, deleteCampaign, editCampaign, getCampaignMessages, getCampaigns, sendChat } from "@/roleplaychatAPI";
+import { createCampaign, deleteCampaign, deleteChats, editCampaign, getCampaignMessages, getCampaigns, sendChat } from "@/roleplaychatAPI";
 import crypto from "crypto";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -206,7 +206,7 @@ export async function deleteMessage(formdata: FormData) {
         throw new Error("Campaign ID not found");
     }
 
-    return deleteCampaign(campaignId, messageCount)
+    return deleteChats(campaignId, Number(messageCount))
         .then((response) => {
             console.log("Messages: ", response);
             revalidatePath("/chat/" + campaignId);

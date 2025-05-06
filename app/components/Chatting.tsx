@@ -1,28 +1,45 @@
 "use client";
 
-import { getMessages, sendMessage, deleteMessage } from "@/action/route"; // Import deleteMessage
+import { getMessages, sendMessage, deleteMessage } from "@/action/route";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 interface message {
     id: string;
     message: string;
-    response?: string; // Response can be undefined initially
+    response?: string;
     createdAt: string;
 }
 
 export default function Chatting(campaignId: { campaignId: string }) {
     const [messages, setMessages] = useState<message[]>([]);
-    const [isLoading, setIsLoading] = useState(false); // Loading state for sending messages
-    const messagesEndRef = useRef<HTMLDivElement>(null); // Ref to scroll to the bottom
+    const [contextMessage, setContextMessage] = useState<string | null>(null); // State for context message
+    const [isLoading, setIsLoading] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        loadContextMessage(); // Load context message on mount
         loadMessages();
-    }, []); // Reload messages only on component mount
+    }, []);
 
     useEffect(() => {
-        scrollToBottom(); // Scroll to the bottom whenever messages change
-    }, [messages]);
+        scrollToBottom();
+    }, [campaignId.campaignId, messages, contextMessage]);
+
+    async function loadContextMessage() {
+        try {
+            const form = new FormData();
+            form.append("campaignId", campaignId.campaignId);
+            form.append("message", "."); // Send an empty message to get context
+
+            const response = await sendMessage(form);
+            if (response && response.response) {
+                setContextMessage(response.response); // Store the context message
+            }
+        } catch (error) {
+            console.error("Error fetching context message: ", error);
+        }
+    }
 
     function loadMessages() {
         const form = new FormData();
@@ -31,9 +48,11 @@ export default function Chatting(campaignId: { campaignId: string }) {
         getMessages(form)
             .then((response) => {
                 if (Array.isArray(response)) {
-                    setMessages(response as message[]);
+                    // Skip the first message (input and response)
+                    setMessages(response.slice(1) as message[]);
                 } else if (response && Array.isArray(response.messages)) {
-                    setMessages(response.messages as message[]);
+                    // Skip the first message (input and response)
+                    setMessages(response.messages.slice(1) as message[]);
                 } else if (response == "") {
                     setMessages([]);
                 } else {
@@ -52,19 +71,15 @@ export default function Chatting(campaignId: { campaignId: string }) {
         ).message.value.trim();
         if (messageInput) {
             const newMessage: message = {
-                id: `temp-${Date.now()}`, // Temporary ID
+                id: `temp-${Date.now()}`,
                 message: messageInput,
-                response: undefined, // Response will be added later
+                response: undefined,
                 createdAt: new Date().toISOString(),
             };
 
-            // Add the user's message immediately
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-            // Reset the input field
+            setMessages((prevMessages) => [newMessage, ...prevMessages]); // Add new message at the top
             (event.target as HTMLFormElement).reset();
-
-            setIsLoading(true); // Show loading indicator
+            setIsLoading(true);
 
             try {
                 const form = new FormData();
@@ -73,7 +88,6 @@ export default function Chatting(campaignId: { campaignId: string }) {
 
                 const response = await sendMessage(form);
 
-                // Update the message with the AI's response
                 setMessages((prevMessages) =>
                     prevMessages.map((msg) =>
                         msg.id === newMessage.id
@@ -84,22 +98,21 @@ export default function Chatting(campaignId: { campaignId: string }) {
             } catch (error) {
                 console.error("Error sending message: ", error);
             } finally {
-                setIsLoading(false); // Hide loading indicator
+                setIsLoading(false);
             }
         }
     };
 
     const handleDeleteLastMessage = async () => {
-        if (messages.length === 0) return; // No messages to delete
+        if (messages.length === 0) return;
 
         try {
             const form = new FormData();
-            form.append("messageCount", "1"); // Always delete the last message
+            form.append("messageCount", "1");
             form.append("campaignId", campaignId.campaignId);
-            await deleteMessage(form); // Call the server action to delete the message
+            await deleteMessage(form);
 
-            // Remove the last message from the state
-            setMessages((prevMessages) => prevMessages.slice(0, -1));
+            setMessages((prevMessages) => prevMessages.slice(1)); // Remove the last message
         } catch (error) {
             console.error("Error deleting the last message: ", error);
         }
@@ -113,10 +126,25 @@ export default function Chatting(campaignId: { campaignId: string }) {
         <div className='w-full h-screen flex flex-col bg-custom-background-primary'>
             {/* Messages */}
             <div className='flex-grow overflow-y-auto p-4'>
+                {/* Context Message */}
+                {contextMessage && (
+                    <div className='max-w-4xl mx-auto px-4 my-18 mb-28'>
+                        <div className='flex items-center mb-2'>
+                            <div className='w-8 h-8 flex items-center justify-center bg-gray-500 text-white rounded-full mr-2'>
+                                📜
+                            </div>
+                            <div className='bg-gray-100 text-gray-900 p-3 rounded-lg max-w-[70%]'>
+                                <ReactMarkdown>{contextMessage}</ReactMarkdown>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* User and AI Messages */}
                 {messages.map((message, index) => (
                     <div
-                        key={message.id}
-                        className='max-w-4xl mx-auto px-4 my-18 mb-28' // Added my-6 for top and bottom margin
+                        key={message.id || `fallback-key-${index}`}
+                        className='max-w-4xl mx-auto px-4 my-18 mb-28'
                     >
                         {/* User Message */}
                         <div className='flex items-center mb-2'>
@@ -130,21 +158,21 @@ export default function Chatting(campaignId: { campaignId: string }) {
                         {/* AI Response */}
                         {message.response !== undefined ? (
                             <div className='flex items-center justify-end relative'>
-                                {index === messages.length - 1 && ( // Show the delete button only for the last message
-                                    <button
-                                        onClick={handleDeleteLastMessage}
-                                        className='absolute top-0 left-0 text-red-500 hover:text-red-700'
-                                        aria-label='Delete last message'
-                                    >
-                                        ✖
-                                    </button>
-                                )}
                                 <div className='bg-green-100 text-green-900 p-3 rounded-lg max-w-[70%]'>
                                     <ReactMarkdown>{message.response}</ReactMarkdown>
                                 </div>
                                 <div className='w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full ml-2'>
                                     🤖
                                 </div>
+                                {index === 0 && (
+                                    <button
+                                        onClick={handleDeleteLastMessage}
+                                        className='absolute top-0 right-0 text-red-500 hover:text-red-700'
+                                        aria-label='Delete last message'
+                                    >
+                                        ✖
+                                    </button>
+                                )}
                             </div>
                         ) : (
                             <div className='flex items-center justify-end'>
@@ -173,7 +201,7 @@ export default function Chatting(campaignId: { campaignId: string }) {
                     type='submit'
                     className='ml-4 text-custom-text-primary hover:text-gray-300'
                     aria-label='Send message'
-                    disabled={isLoading} // Disable button while loading
+                    disabled={isLoading}
                 >
                     {isLoading ? (
                         <svg
