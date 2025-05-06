@@ -2,7 +2,7 @@
 
 import prisma from "@/app/lib/db";
 import { options } from "@/auth";
-import { createCampaign, deleteCampaign, editCampaign, getCampaigns } from "@/roleplaychatAPI";
+import { createCampaign, deleteCampaign, editCampaign, getCampaignMessages, getCampaigns, sendChat } from "@/roleplaychatAPI";
 import crypto from "crypto";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -155,4 +155,65 @@ export async function editServerCampaign(formdata: FormData) {
             console.error("Error fetching campaigns: ", error);
         }
         );
+}
+export async function getMessages(formdata: FormData) {
+    const campaignId = formdata.get("campaignId");
+    if (!campaignId || typeof campaignId !== "string") {
+        throw new Error("Campaign ID not found");
+    }
+
+    return getCampaignMessages(campaignId)
+        .then((response) => {
+            console.log("Messages: ", response);
+            revalidatePath("/chat");
+            return response; // Ensure the response is returned
+        })
+        .catch((error) => {
+            console.error("Error fetching messages: ", error);
+            throw error; // Re-throw the error to propagate it
+        });
+}
+export async function sendMessage(formdata: FormData) {
+    const campaignId = formdata.get("campaignId");
+    const message = formdata.get("message");
+
+    if (!campaignId || typeof campaignId !== "string") {
+        throw new Error("Campaign ID not found");
+    }
+    if (!message || typeof message !== "string") {
+        throw new Error("Message not found");
+    }
+
+    return sendChat(campaignId, message)
+        .then((response) => {
+            console.log("Messages: ", response);
+            revalidatePath("/chat/" + campaignId);
+            return response; // Ensure the response is returned
+        })
+        .catch((error) => {
+            console.error("Error fetching messages: ", error);
+            throw error; // Re-throw the error to propagate it
+        });
+}
+export async function deleteMessage(formdata: FormData) {
+    const messageCount = formdata.get("messageCount");
+    const campaignId = formdata.get("campaignId");
+
+    if (!messageCount || typeof messageCount !== "string") {
+        throw new Error("Message count not found");
+    }
+    if (!campaignId || typeof campaignId !== "string") {
+        throw new Error("Campaign ID not found");
+    }
+
+    return deleteCampaign(campaignId, messageCount)
+        .then((response) => {
+            console.log("Messages: ", response);
+            revalidatePath("/chat/" + campaignId);
+            return response; // Ensure the response is returned
+        })
+        .catch((error) => {
+            console.error("Error fetching messages: ", error);
+            throw error; // Re-throw the error to propagate it
+        });
 }
