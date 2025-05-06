@@ -8,7 +8,6 @@ export default withAuth(
     {
       callbacks: {
         authorized: ({ token }) => {
-          console.log("Token in middleware: ", token); // Debug log
           return !!token; // User is authorized if a session exists
         },
       },
@@ -17,4 +16,3 @@ export default withAuth(
   export const config = {
     matcher: ["/chat", "/keys"],
   };
-console.log("Middleware loaded"); // Debug log

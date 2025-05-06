@@ -13,62 +13,55 @@ interface message {
 
 export default function Chatting(campaignId: { campaignId: string }) {
     const [messages, setMessages] = useState<message[]>([]);
-    const [contextMessage, setContextMessage] = useState<string | null>(null); // State for context message
     const [isLoading, setIsLoading] = useState(false);
+    const [dummyMessageSent, setDummyMessageSent] = useState(false); // Track dummy message
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const isLoadingRef = useRef(false);
 
     useEffect(() => {
-        loadContextMessage(); // Load context message on mount
+        console.log("useEffect triggered for campaignId:", campaignId.campaignId);
         loadMessages();
-    }, []);
+    }, [campaignId.campaignId]);
 
     useEffect(() => {
         scrollToBottom();
-    }, [campaignId.campaignId, messages, contextMessage]);
+    }, [messages]); // Only scroll when messages change
 
-    async function loadContextMessage() {
-        try {
-            const form = new FormData();
-            form.append("campaignId", campaignId.campaignId);
-            form.append("message", "."); // Send an empty message to get context
+    async function loadMessages() {
+        if (isLoadingRef.current) return; // Prevent duplicate calls
+        isLoadingRef.current = true;
 
-            const response = await sendMessage(form);
-            if (response && response.response) {
-                setContextMessage(response.response); // Store the context message
-            }
-        } catch (error) {
-            console.error("Error fetching context message: ", error);
-        }
-    }
+        setIsLoading(true);
 
-    function loadMessages() {
         const form = new FormData();
         form.append("campaignId", campaignId.campaignId);
 
-        getMessages(form)
-            .then((response) => {
-                if (Array.isArray(response)) {
-                    // Skip the first message (input and response)
-                    setMessages(response.slice(1) as message[]);
-                } else if (response && Array.isArray(response.messages)) {
-                    // Skip the first message (input and response)
-                    setMessages(response.messages.slice(1) as message[]);
-                } else if (response == "") {
-                    setMessages([]);
-                } else {
-                    console.error("Unexpected response format: ", response);
-                }
-            })
-            .catch((error) => {
-                console.error("Error fetching messages: ", error);
-            });
+        try {
+            const response = await getMessages(form);
+            if (Array.isArray(response)) {
+                setMessages(response as message[]);
+                setDummyMessageSent(false); // Reset dummy message flag
+            } else if (response == "" && !dummyMessageSent) {
+                setMessages([]);
+                form.append("message", ".");
+                console.log("Sending dummy message to get context...");
+                await sendMessage(form); // Send a single dummy message
+                setDummyMessageSent(true); // Mark dummy message as sent
+                await loadMessages(); // Reload messages
+            } else {
+                console.error("Unexpected response format: ", response);
+            }
+        } catch (error) {
+            console.error("Error fetching messages: ", error);
+        } finally {
+            setIsLoading(false);
+            isLoadingRef.current = false; // Reset the flag
+        }
     }
 
     const handleSendMessage = async (event: React.FormEvent) => {
         event.preventDefault();
-        const messageInput = (
-            event.target as HTMLFormElement
-        ).message.value.trim();
+        const messageInput = (event.target as HTMLFormElement).message.value.trim();
         if (messageInput) {
             const newMessage: message = {
                 id: `temp-${Date.now()}`,
@@ -77,7 +70,7 @@ export default function Chatting(campaignId: { campaignId: string }) {
                 createdAt: new Date().toISOString(),
             };
 
-            setMessages((prevMessages) => [newMessage, ...prevMessages]); // Add new message at the top
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
             (event.target as HTMLFormElement).reset();
             setIsLoading(true);
 
@@ -88,6 +81,7 @@ export default function Chatting(campaignId: { campaignId: string }) {
 
                 const response = await sendMessage(form);
 
+                // Optionally update the temporary message with the response
                 setMessages((prevMessages) =>
                     prevMessages.map((msg) =>
                         msg.id === newMessage.id
@@ -95,6 +89,9 @@ export default function Chatting(campaignId: { campaignId: string }) {
                             : msg
                     )
                 );
+
+                // Fetch the latest messages
+                await loadMessages();
             } catch (error) {
                 console.error("Error sending message: ", error);
             } finally {
@@ -127,60 +124,71 @@ export default function Chatting(campaignId: { campaignId: string }) {
             {/* Messages */}
             <div className='flex-grow overflow-y-auto p-4'>
                 {/* Context Message */}
-                {contextMessage && (
+                {messages.length > 0 && (
                     <div className='max-w-4xl mx-auto px-4 my-18 mb-28'>
                         <div className='flex items-center mb-2'>
                             <div className='w-8 h-8 flex items-center justify-center bg-gray-500 text-white rounded-full mr-2'>
                                 📜
                             </div>
                             <div className='bg-gray-100 text-gray-900 p-3 rounded-lg max-w-[70%]'>
-                                <ReactMarkdown>{contextMessage}</ReactMarkdown>
+                                <ReactMarkdown>
+                                    {messages[0].response}
+                                </ReactMarkdown>
                             </div>
                         </div>
                     </div>
                 )}
 
                 {/* User and AI Messages */}
-                {messages.map((message, index) => (
-                    <div
-                        key={message.id || `fallback-key-${index}`}
-                        className='max-w-4xl mx-auto px-4 my-18 mb-28'
-                    >
-                        {/* User Message */}
-                        <div className='flex items-center mb-2'>
-                            <div className='w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full mr-2'>
-                                👤
+                {messages.map((message, index) =>
+                    index === 0 ? null : (
+                        <div
+                            key={message.id || `fallback-key-${index}`}
+                            className='max-w-4xl mx-auto px-4 my-18 mb-28'
+                        >
+                            {/* User Message */}
+                            <div className='flex items-center mb-2'>
+                                <div className='w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full mr-2'>
+                                    👤
+                                </div>
+                                <div className='bg-blue-100 text-blue-900 p-3 rounded-lg max-w-[70%]'>
+                                    <ReactMarkdown>
+                                        {message.message}
+                                    </ReactMarkdown>
+                                </div>
                             </div>
-                            <div className='bg-blue-100 text-blue-900 p-3 rounded-lg max-w-[70%]'>
-                                <ReactMarkdown>{message.message}</ReactMarkdown>
-                            </div>
+                            {/* AI Response */}
+                            {message.response !== undefined ? (
+                                <div className='flex items-center justify-end relative'>
+                                    <div className='bg-green-100 text-green-900 p-3 rounded-lg max-w-[70%]'>
+                                        <ReactMarkdown>
+                                            {message.response}
+                                        </ReactMarkdown>
+                                    </div>
+                                    <div className='w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full ml-2'>
+                                        🤖
+                                    </div>
+                                    {/* Show delete button for the last AI response */}
+                                    {index === messages.length - 1 && (
+                                        <button
+                                            onClick={handleDeleteLastMessage}
+                                            className='absolute top-0 right-0 text-red-500 hover:text-red-700'
+                                            aria-label='Delete last message'
+                                        >
+                                            ✖
+                                        </button>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className='flex items-center justify-end'>
+                                    <div className='text-gray-500 italic'>
+                                        Loading...
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        {/* AI Response */}
-                        {message.response !== undefined ? (
-                            <div className='flex items-center justify-end relative'>
-                                <div className='bg-green-100 text-green-900 p-3 rounded-lg max-w-[70%]'>
-                                    <ReactMarkdown>{message.response}</ReactMarkdown>
-                                </div>
-                                <div className='w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full ml-2'>
-                                    🤖
-                                </div>
-                                {index === 0 && (
-                                    <button
-                                        onClick={handleDeleteLastMessage}
-                                        className='absolute top-0 right-0 text-red-500 hover:text-red-700'
-                                        aria-label='Delete last message'
-                                    >
-                                        ✖
-                                    </button>
-                                )}
-                            </div>
-                        ) : (
-                            <div className='flex items-center justify-end'>
-                                <div className='text-gray-500 italic'>Loading...</div>
-                            </div>
-                        )}
-                    </div>
-                ))}
+                    )
+                )}
                 {/* Scroll to bottom reference */}
                 <div ref={messagesEndRef}></div>
             </div>

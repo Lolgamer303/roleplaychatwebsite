@@ -9,7 +9,6 @@ import { revalidatePath } from "next/cache";
 
 export async function createApikey(formdata: FormData) {
     const session = await getServerSession(options);
-    console.log("Session in createApikey:", session);
 
     const keyName = formdata.get("name");
     if (!keyName || typeof keyName !== "string") {
@@ -73,7 +72,6 @@ export async function getServerCampaigns(formdata: FormData) {
 
     return getCampaigns(userId)
         .then((response) => {
-            console.log("Campaigns: ", response);
             revalidatePath("/chat");
             return response; // Ensure the response is returned
         })
@@ -98,8 +96,7 @@ export async function createServerCampaign(formdata: FormData) {
     }
 
     return createCampaign(userId, name, book)
-        .then((response) => {
-            console.log("Campaigns: ", response);
+        .then(() => {
             revalidatePath("/chat");
         }
         )
@@ -120,8 +117,7 @@ export async function deleteServerCampaign(formdata: FormData) {
     }
 
     return deleteCampaign(userId, campaignId)
-        .then((response) => {
-            console.log("Campaigns: ", response);
+        .then(() => {
             revalidatePath("/chat");
         }
         )
@@ -146,8 +142,7 @@ export async function editServerCampaign(formdata: FormData) {
     }
 
     return editCampaign(userId, campaignId, name)
-        .then((response) => {
-            console.log("Campaigns: ", response);
+        .then(() => {
             revalidatePath("/chat");
         }
         )
@@ -164,7 +159,6 @@ export async function getMessages(formdata: FormData) {
 
     return getCampaignMessages(campaignId)
         .then((response) => {
-            console.log("Messages: ", response);
             revalidatePath("/chat");
             return response; // Ensure the response is returned
         })
@@ -186,9 +180,8 @@ export async function sendMessage(formdata: FormData) {
 
     return sendChat(campaignId, message)
         .then((response) => {
-            console.log("Messages: ", response);
             revalidatePath("/chat/" + campaignId);
-            return response; // Ensure the response is returned
+            return response;
         })
         .catch((error) => {
             console.error("Error fetching messages: ", error);
@@ -207,10 +200,8 @@ export async function deleteMessage(formdata: FormData) {
     }
 
     return deleteChats(campaignId, Number(messageCount))
-        .then((response) => {
-            console.log("Messages: ", response);
+        .then(() => {
             revalidatePath("/chat/" + campaignId);
-            return response; // Ensure the response is returned
         })
         .catch((error) => {
             console.error("Error fetching messages: ", error);

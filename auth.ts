@@ -24,12 +24,10 @@ export const options: NextAuthOptions = ({
         }),
     ],
     callbacks: {
-        async signIn({ account, profile }) {
+        async signIn({ profile }) {
             if (!profile?.email) {
                 throw new Error("No profile");
             }
-            console.log('profile : ' + profile);
-            console.log(account);
             const googleProfile = profile as unknown as GoogleProfile
             if(!googleProfile) {
                 console.log("No Google Profile");
@@ -64,7 +62,6 @@ export const options: NextAuthOptions = ({
             } else {
                 console.error("Token does not contain an ID");
             }
-            console.log("Session in session callback:", session);
             return session;
         },  
         jwt: async ({ token, user }) => {
@@ -81,7 +78,6 @@ export const options: NextAuthOptions = ({
                     token.id = userRecord.id;
                 }
             }
-            console.log("Token in jwt callback:", token);
             return token;
         },
     },

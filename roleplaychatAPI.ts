@@ -169,7 +169,7 @@ export async function getCampaignMessages(campaignId: string) {
         });
 
         if (response.status === 200 || response.status === 201 || response.status === 204) {
-            console.log(response.data + ' ' + response.status);
+            console.log('gotCampaignmessage :' + response.data + ' ' + response.status);
             return response.data;
         }
 
@@ -204,7 +204,7 @@ export async function sendChat(campaignId: string, message: string) {
         });
 
         if (response.status === 200 || response.status === 201 || response.status === 204) {
-            console.log(response.data + ' ' + response.status);
+            console.log('sentChat :' + response.data + ' ' + response.status);
             return response.data;
         }
 
@@ -242,7 +242,7 @@ export async function deleteChats(campaignId: string, numberOfMessages: number) 
         });
 
         if (response.status === 200 || response.status === 201 || response.status === 204) {
-            console.log(response.data + ' ' + response.status);
+            console.log('deleteChats :' + response.data + ' ' + response.status);
             return response.data;
         }
 
