@@ -37,17 +37,23 @@ export default function Chatting(campaignId: { campaignId: string }) {
         form.append("campaignId", campaignId.campaignId);
 
         try {
-            const response = await getMessages(form);
+            let response = await getMessages(form);
+
             if (Array.isArray(response)) {
+                response = response.slice(1); // Remove the first message (context)
+                console.log("Response:", response);
+
+                if (response.length === 0 && !dummyMessageSent) {
+                    console.log("No messages found. Sending dummy message to get context...");
+                    form.append("message", ".");
+                    await sendMessage(form); // Send a single dummy message
+                    setDummyMessageSent(true); // Mark dummy message as sent
+                    await loadMessages(); // Reload messages after sending dummy message
+                    return;
+                }
+
                 setMessages(response as message[]);
                 setDummyMessageSent(false); // Reset dummy message flag
-            } else if (response == "" && !dummyMessageSent) {
-                setMessages([]);
-                form.append("message", ".");
-                console.log("Sending dummy message to get context...");
-                await sendMessage(form); // Send a single dummy message
-                setDummyMessageSent(true); // Mark dummy message as sent
-                await loadMessages(); // Reload messages
             } else {
                 console.error("Unexpected response format: ", response);
             }
