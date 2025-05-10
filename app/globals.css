@@ -7,7 +7,8 @@
   --color-custom-text-secondary: var(--color-custom-text-secondary-light);
   --color-custom-accent-primary: var(--color-custom-accent-primary-light);
   --color-custom-accent-secondary: var(--color-custom-accent-secondary-light);
-  --color-custom-accent-tertiary: #2E4A3D;
+  --color-custom-accent-tertiary: var(--color-custom-accent-tertiary-light);
+  --color-custom-accent-quartiary: var(--color-custom-accent-quartiary-light);
   --color-custom-border: var(--color-custom-border-light);
   --color-custom-hover: var(--color-custom-hover-light);
   --color-custom-click: #3E6B5A;
@@ -29,8 +30,10 @@
   --color-custom-background-secondary-light: #f9f9f9;
   --color-custom-text-primary-light: #1a1a1a;
   --color-custom-text-secondary-light: #333333;
-  --color-custom-accent-primary-light: #007bff;
-  --color-custom-accent-secondary-light: #6c757d;
+  --color-custom-accent-primary-light: #68abf3;
+  --color-custom-accent-secondary-light: #c9ffca;
+  --color-custom-accent-tertiary-light: #b2e4fb;
+  --color-custom-accent-quartiary-light: #aaef95;
   --color-custom-border-light: #e0e0e0;
   --color-custom-hover-light: #0056b3;
 
@@ -39,8 +42,10 @@
   --color-custom-background-secondary-dark: #1a1a1a;
   --color-custom-text-primary-dark: #e4d8b4;
   --color-custom-text-secondary-dark: #fffff0;
-  --color-custom-accent-primary-dark: #8b0000;
-  --color-custom-accent-secondary-dark: #70543e;
+  --color-custom-accent-primary-dark: #1c749c;
+  --color-custom-accent-secondary-dark: #726c56;
+  --color-custom-accent-tertiary-dark: #212658;
+  --color-custom-accent-quartiary-dark: #9ca51a;
   --color-custom-border-dark: #4a4a4a;
   --color-custom-hover-dark: #5a3e6b;
 }

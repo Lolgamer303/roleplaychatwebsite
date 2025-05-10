@@ -29,7 +29,7 @@ export default function Chatting(campaignId: { campaignId: string }) {
     }, [campaignId.campaignId]);
 
     useEffect(() => {
-        if (!isNearBottom()) return;
+        if (!isNearBottom()) return;    
         scrollToBottom();
         console.log(messages);
     }, [messages]); // Only scroll when messages change
@@ -158,10 +158,10 @@ export default function Chatting(campaignId: { campaignId: string }) {
                         >
                             {/* User Message */}
                             <div className="flex items-center mb-2">
-                                <div className="w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full mr-2">
+                                <div className="w-8 h-8 flex items-center justify-center bg-custom-accent-primary text-white rounded-full mr-2">
                                     👤
                                 </div>
-                                <div className="bg-blue-100 text-blue-900 p-3 rounded-lg max-w-[70%]">
+                                <div className="bg-custom-accent-tertiary text-custom-text-primary p-3 rounded-lg max-w-[70%]">
                                     <ReactMarkdown>
                                         {message.message}
                                     </ReactMarkdown>
@@ -170,12 +170,12 @@ export default function Chatting(campaignId: { campaignId: string }) {
                             {/* AI Response */}
                             {message.response !== undefined ? (
                                 <div className="flex items-center justify-end relative">
-                                    <div className="bg-green-100 text-green-900 p-3 rounded-lg max-w-[70%]">
+                                    <div className="bg-custom-accent-secondary text-custom-text-primary p-3 rounded-lg max-w-[70%]">
                                         <ReactMarkdown>
                                             {message.response}
                                         </ReactMarkdown>
                                     </div>
-                                    <div className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full ml-2">
+                                    <div className="w-8 h-8 flex items-center justify-center bg-custom-accent-quartiary text-white rounded-full ml-2">
                                         🤖
                                     </div>
                                 </div>

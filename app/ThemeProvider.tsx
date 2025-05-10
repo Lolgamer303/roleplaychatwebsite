@@ -45,6 +45,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         root.style.setProperty('--color-custom-text-secondary', 'var(--color-custom-text-secondary-dark)');
         root.style.setProperty('--color-custom-accent-primary', 'var(--color-custom-accent-primary-dark)');
         root.style.setProperty('--color-custom-accent-secondary', 'var(--color-custom-accent-secondary-dark)');
+        root.style.setProperty('--color-custom-accent-tertiary', 'var(--color-custom-accent-tertiary-dark)');
+        root.style.setProperty('--color-custom-accent-quartiary', 'var(--color-custom-accent-quartiary-dark)');
         root.style.setProperty('--color-custom-border', 'var(--color-custom-border-dark)');
         root.style.setProperty('--color-custom-hover', 'var(--color-custom-hover-dark)');
       } else {
@@ -54,6 +56,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         root.style.setProperty('--color-custom-text-secondary', 'var(--color-custom-text-secondary-light)');
         root.style.setProperty('--color-custom-accent-primary', 'var(--color-custom-accent-primary-light)');
         root.style.setProperty('--color-custom-accent-secondary', 'var(--color-custom-accent-secondary-light)');
+        root.style.setProperty('--color-custom-accent-tertiary', 'var(--color-custom-accent-tertiary-light)');
+        root.style.setProperty('--color-custom-accent-quartiary', 'var(--color-custom-accent-quartiary-light)');
         root.style.setProperty('--color-custom-border', 'var(--color-custom-border-light)');
         root.style.setProperty('--color-custom-hover', 'var(--color-custom-hover-light)');
       }
