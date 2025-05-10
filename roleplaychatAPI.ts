@@ -196,7 +196,7 @@ export async function sendChat(campaignId: string, message: string) {
         const body = {
             input: message,
         };
-        const response = await axios.post(`${apiUrl}/campaigns/${campaignId}`, body, {
+        const response = await axios.post(`${apiUrl}/campaigns/${campaignId}/chats`, body, {
             headers: {
                 Authorization: `Bearer ${apiKey}`,
                 "Content-Type": "application/json",
@@ -228,7 +228,7 @@ export async function deleteChats(campaignId: string, numberOfMessages: number) 
     }
 
     const body = {
-        numberOfMessages: numberOfMessages,
+        count: numberOfMessages,
         campaignId: campaignId,
     };
 
@@ -239,6 +239,9 @@ export async function deleteChats(campaignId: string, numberOfMessages: number) 
                 "Content-Type": "application/json",
             },
             data: body,
+            params: {
+                count: numberOfMessages,
+            }
         });
 
         if (response.status === 200 || response.status === 201 || response.status === 204) {

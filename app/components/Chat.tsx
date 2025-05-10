@@ -2,6 +2,7 @@
 import { createServerCampaign, getServerCampaigns, editServerCampaign, deleteServerCampaign } from "@/action/route";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { set } from "zod";
 
 interface Campaign {
     id: string;
@@ -12,6 +13,7 @@ export default function Chat() {
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [newCampaignName, setNewCampaignName] = useState<string>("");
     const [isReloading, setIsReloading] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
     const [editingCampaignId, setEditingCampaignId] = useState<string | null>(null);
     const [editedCampaignName, setEditedCampaignName] = useState<string>("");
 
@@ -48,21 +50,24 @@ export default function Chat() {
             console.error("Campaign name cannot be empty");
             return; // Prevent submission if the name is empty
         }
+        setIsCreating(true); 
 
         const formdata: FormData = new FormData();
         formdata.append("userId", "1");
         formdata.append("name", newCampaignName);
         formdata.append("book", "test book");
+        setNewCampaignName(""); // Clear the input field
 
         createServerCampaign(formdata)
             .then(() => {
                 console.log("Campaign created successfully");
-                setNewCampaignName(""); // Clear the input field
                 fetchCampaigns(); // Reload campaigns after creation
-            })
+                setIsCreating(false);
+            })  
             .catch((error) => {
                 console.error("Error creating campaign: ", error);
             });
+        
     }
 
     function deleteCampaign(campaignId: string) {
@@ -126,7 +131,7 @@ export default function Chat() {
             <div className='bg-custom-background-secondary border border-custom-border rounded-md p-4 relative'>
                 <button
                     className={`cursor-pointer size-10 rounded-2xl mb-4 flex items-center justify-center absolute top-2 right-2 ${
-                        isReloading ? "animate-reload-spin" : ""
+                        isReloading || isCreating ? "animate-reload-spin" : ""
                     }`}
                     onClick={fetchCampaigns}
                     aria-label='Reload Campaigns'
@@ -255,8 +260,9 @@ export default function Chat() {
                             className='flex-1 border border-custom-border rounded-md p-2 text-custom-text-primary bg-custom-background-secondary focus:outline-none focus:ring-2 focus:ring-custom-accent'
                         />
                         <button
-                            className='px-4 py-2 bg-custom-accent border border-custom-border cursor-pointer text-custom-text-primary font-semibold rounded-md hover:bg-custom-accent-hover transition duration-300'
+                            className='px-4 py-2 bg-custom-accent border active:scale-90 border-custom-border cursor-pointer text-custom-text-primary font-semibold rounded-md hover:bg-custom-accent-hover transition duration-300'
                             onClick={createCampaign}
+                            disabled={isCreating}
                         >
                             Create
                         </button>
