@@ -35,7 +35,7 @@ export async function getCampaigns(userId: string) {
         throw new Error(`Request failed with status code: ${response.status}, Response: ${response.data}`);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error(`Error fetching campaigns: ${errorMessage}`);
+        console.error(`Error fetching campaigns: ${errorMessage}. User ID: ${userId}. API URL: ${apiUrl}/campaigns`);
         throw error;
     }
 }
