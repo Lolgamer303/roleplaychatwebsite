@@ -2,7 +2,6 @@
 import { createServerCampaign, getServerCampaigns, editServerCampaign, deleteServerCampaign } from "@/action/route";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { set } from "zod";
 
 interface Campaign {
     id: string;
