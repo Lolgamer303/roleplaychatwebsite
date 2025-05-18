@@ -19,6 +19,7 @@ export async function getCampaigns(userId: string) {
         const body = {
             userId: userId,
         };
+        console.log(`${apiUrl}/campaigns`)
         const response = await axios.get(`${apiUrl}/campaigns`, {
             headers: {
                 Authorization: `Bearer ${apiKey}`,
@@ -26,7 +27,6 @@ export async function getCampaigns(userId: string) {
             },
             params: body,
         });
-
         if (response.status === 200 || response.status === 201 || response.status === 204) {
             console.log(response.data + ' ' + response.status);
             return response.data;

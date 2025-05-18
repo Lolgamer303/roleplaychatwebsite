@@ -64,13 +64,17 @@ function generateKey(): string {
     return hash;
 }
 
-export async function getServerCampaigns(formdata: FormData) {
-    const userId = formdata.get("userId");
-    if (!userId || typeof userId !== "string") {
-        throw new Error("User ID not found");
+export async function getServerCampaigns() {
+    const session = await getServerSession(options)
+    if (!session) {
+        throw new Error("Session not found");
+    }
+    const userId = session.user.id;
+    if (!userId || typeof userId !== "number") {
+        throw new Error(`Invalid user ID, ${userId}, session: ${JSON.stringify(userId)}`);
     }
 
-    return getCampaigns(userId)
+    return getCampaigns(userId.toString())
         .then((response) => {
             revalidatePath("/chat");
             return response; // Ensure the response is returned
@@ -81,12 +85,15 @@ export async function getServerCampaigns(formdata: FormData) {
         });
 }
 export async function createServerCampaign(formdata: FormData) {
-    const userId = formdata.get("userId");
     const name = formdata.get("name");
     const book = formdata.get("book");
-
-    if (!userId || typeof userId !== "string") {
-        throw new Error("User ID not found");
+    const session = await getServerSession(options);
+    if (!session) {
+        throw new Error("Session not found");
+    }
+    const userId = session.user.id;
+    if (!userId || typeof userId !== "number") {
+        throw new Error(`Invalid user ID, ${userId}, session: ${JSON.stringify(userId)}`);
     }
     if (!name || typeof name !== "string") {
         throw new Error("Name not found");
@@ -95,7 +102,7 @@ export async function createServerCampaign(formdata: FormData) {
         throw new Error("Book not found");
     }
 
-    return createCampaign(userId, name, book)
+    return createCampaign(userId.toString(), name, book)
         .then(() => {
             revalidatePath("/chat");
         }
@@ -106,17 +113,22 @@ export async function createServerCampaign(formdata: FormData) {
         );
 }
 export async function deleteServerCampaign(formdata: FormData) {
-    const userId = formdata.get("userId");
     const campaignId = formdata.get("campaignId");
-
-    if (!userId || typeof userId !== "string") {
-        throw new Error("User ID not found");
+    const session = await getServerSession(options);
+    if (!session) {
+        throw new Error("Session not found");
     }
+    const userId = session.user.id;
+    if (!userId || typeof userId !== "number") {
+        throw new Error(`Invalid user ID, ${userId}, session: ${JSON.stringify(userId)}`);
+    }
+
+
     if (!campaignId || typeof campaignId !== "string") {
         throw new Error("Campaign ID not found");
     }
 
-    return deleteCampaign(userId, campaignId)
+    return deleteCampaign(userId.toString(), campaignId)
         .then(() => {
             revalidatePath("/chat");
         }
@@ -127,13 +139,18 @@ export async function deleteServerCampaign(formdata: FormData) {
         );
 }
 export async function editServerCampaign(formdata: FormData) {
-    const userId = formdata.get("userId");
     const campaignId = formdata.get("campaignId");
     const name = formdata.get("name");
+    const session = await getServerSession(options);
 
-    if (!userId || typeof userId !== "string") {
-        throw new Error("User ID not found");
+    if (!session) {
+        throw new Error("Session not found");
     }
+    const userId = session.user.id;
+    if (!userId || typeof userId !== "number") {
+        throw new Error(`Invalid user ID, ${userId}, session: ${JSON.stringify(userId)}`);
+    }
+
     if (!campaignId || typeof campaignId !== "string") {
         throw new Error("Campaign ID not found");
     }
@@ -141,7 +158,7 @@ export async function editServerCampaign(formdata: FormData) {
         throw new Error("Name not found");
     }
 
-    return editCampaign(userId, campaignId, name)
+    return editCampaign(userId.toString(), campaignId, name)
         .then(() => {
             revalidatePath("/chat");
         }

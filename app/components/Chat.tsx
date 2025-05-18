@@ -2,7 +2,6 @@
 import { createServerCampaign, getServerCampaigns, editServerCampaign, deleteServerCampaign } from "@/action/route";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { set } from "zod";
 
 interface Campaign {
     id: string;
@@ -23,10 +22,7 @@ export default function Chat() {
 
     function fetchCampaigns() {
         setIsReloading(true); // Start animation
-        const formdata: FormData = new FormData();
-        formdata.append("userId", "1");
-
-        getServerCampaigns(formdata)
+        getServerCampaigns()
             .then((response) => {
                 if (Array.isArray(response)) {
                     setCampaigns(response as Campaign[]);
@@ -53,7 +49,6 @@ export default function Chat() {
         setIsCreating(true); 
 
         const formdata: FormData = new FormData();
-        formdata.append("userId", "1");
         formdata.append("name", newCampaignName);
         formdata.append("book", "test book");
         setNewCampaignName(""); // Clear the input field
@@ -72,7 +67,6 @@ export default function Chat() {
 
     function deleteCampaign(campaignId: string) {
         const formdata: FormData = new FormData();
-        formdata.append("userId", "1");
         formdata.append("campaignId", campaignId);
 
         deleteServerCampaign(formdata)
@@ -103,7 +97,6 @@ export default function Chat() {
         }
 
         const formdata: FormData = new FormData();
-        formdata.append("userId", "1");
         formdata.append("campaignId", editingCampaignId!);
         formdata.append("name", editedCampaignName);
 

@@ -1,24 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+"use client";
+import React from 'react';
+import Markdown from 'markdown-to-jsx';
+import styled, { createGlobalStyle } from 'styled-components';
 
-## Getting Started Locally
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Documentation
-
-# RoleplayChat API Documentation
+// Cleaned Markdown content (no unnecessary escapes)
+const markdown = `# RoleplayChat API Documentation
 
 This document describes the RoleplayChat Flask-based API.
 
@@ -288,4 +274,88 @@ Example:
 ---
 
 *End of documentation.*
+`;
 
+// Global styles for smooth scrolling and anchor offset
+const GlobalStyle = createGlobalStyle`
+  html {
+    scroll-behavior: smooth;
+  }
+  h1[id], h2[id], h3[id], h4[id] {
+    scroll-margin-top: 100px;
+  }
+`;
+
+// Styled container with theme variables
+const Container = styled.div`
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  line-height: 1.6;
+  color: var(--color-custom-text-primary, #333);
+  background: var(--color-custom-background-primary, #fff);
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+  h2 { font-size: 2rem; margin-top: 2rem; margin-bottom: 1rem; }
+  h3 { font-size: 1.75rem; margin-top: 1.5rem; }
+
+  p { margin: 1rem 0; }
+
+  a { color: var(--color-custom-accent-primary, #0070f3); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  code { 
+    background: var(--color-custom-background-secondary, #f5f5f5); 
+    padding: 0.2rem 0.4rem; 
+    border-radius: 4px; 
+    font-family: var(--font-mono, 'Courier New', monospace); 
+  }
+  pre { 
+    background: var(--color-custom-background-secondary, #f5f5f5); 
+    padding: 1rem; 
+    border-radius: 4px; 
+    overflow-x: auto; 
+  }
+
+  blockquote { 
+    border-left: 4px solid var(--color-custom-border, #ddd); 
+    padding-left: 1rem; 
+    color: var(--color-custom-text-secondary, #666); 
+    font-style: italic; 
+    margin: 1rem 0; 
+  }
+
+  ul, ol { margin: 1rem 0 1rem 2rem; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: var(--color-custom-background-secondary, #f9f9f9);
+  }
+  th, td {
+    border: 1px solid var(--color-custom-border, #ddd);
+    padding: 0.75rem 1rem;
+  }
+  th {
+    background: var(--color-custom-accent-tertiary, #f0f0f0);
+    text-align: left;
+    color: var(--color-custom-text-primary, #1a1a1a);
+  }
+`;
+
+export default function StyledMarkdownPage() {
+  return (
+    <>
+      <GlobalStyle />
+      <Container>
+        <Markdown
+          options={{ overrides: { table: 'table', th: 'th', td: 'td' } }}
+        >
+          {markdown}
+        </Markdown>
+      </Container>
+    </>
+  );
+}

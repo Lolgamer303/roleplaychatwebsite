@@ -142,7 +142,7 @@ export default function Chatting(campaignId: { campaignId: string }) {
                             </div>
                             <div className="bg-gray-100 text-gray-900 p-3 rounded-lg max-w-[70%]">
                                 <ReactMarkdown>
-                                    {messages[0].response}
+                                    {messages[0].response ?? ""}
                                 </ReactMarkdown>
                             </div>
                         </div>
