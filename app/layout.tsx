@@ -39,7 +39,7 @@ const imefellenglish = IM_Fell_English({
 });
 
 export const metadata: Metadata = {
-  title: "StoryChat",
+  title: "RoleplayChat",
   description: "Your AI Storyteller",
   
 };
