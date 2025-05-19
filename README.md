@@ -65,6 +65,8 @@ You can obtain or manage API keys at [https://roleplaychatwebsite.vercel.app/key
 |          | \`apiKeyId\` (UUID), \`createdAt\` (timestamp)                                                       |
 | Chat     | \`id\` (serial), \`message\` (text), \`response\` (text), \`campaignId\` (UUID), \`createdAt\` (timestamp) |
 
+> **Note:** The `book` and `prompt` fields for campaigns are currently placeholders. Functionality related to these fields (such as customizing campaign prompts or associating campaigns with specific books) is not yet implemented and will be added in a future release.
+
 ---
 
 ## Endpoints
