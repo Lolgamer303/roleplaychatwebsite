@@ -1,5 +1,10 @@
 "use client";
-import { createServerCampaign, getServerCampaigns, editServerCampaign, deleteServerCampaign } from "@/action/route";
+import {
+    createServerCampaign,
+    getServerCampaigns,
+    editServerCampaign,
+    deleteServerCampaign,
+} from "@/action/route";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -13,31 +18,41 @@ export default function Chat() {
     const [newCampaignName, setNewCampaignName] = useState<string>("");
     const [isReloading, setIsReloading] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
-    const [editingCampaignId, setEditingCampaignId] = useState<string | null>(null);
+    const [editingCampaignId, setEditingCampaignId] = useState<string | null>(
+        null
+    );
     const [editedCampaignName, setEditedCampaignName] = useState<string>("");
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchCampaigns();
     }, []);
 
     function fetchCampaigns() {
-        setIsReloading(true); // Start animation
+        setIsReloading(true);
+        setError(null); // Clear previous errors
         getServerCampaigns()
             .then((response) => {
                 if (Array.isArray(response)) {
                     setCampaigns(response as Campaign[]);
                 } else if (response && Array.isArray(response.campaigns)) {
                     setCampaigns(response.campaigns as Campaign[]);
-                } else if (response == '') {
+                } else if (response == "") {
                     setCampaigns([]);
                 } else {
                     console.error("Unexpected response format: ", response);
                 }
-                setIsReloading(false); // Stop animation
+                setIsReloading(false);
             })
             .catch((error) => {
-                console.error("Error fetching campaigns: ", error);
-                setIsReloading(false); // Stop animation
+                if (error?.message?.includes("401")) {
+                    setError(
+                        "Session expired or unauthorized. Please try reloading."
+                    );
+                } else {
+                    setError("Error fetching campaigns. Please try again.");
+                }
+                setIsReloading(false);
             });
     }
 
@@ -46,7 +61,7 @@ export default function Chat() {
             console.error("Campaign name cannot be empty");
             return; // Prevent submission if the name is empty
         }
-        setIsCreating(true); 
+        setIsCreating(true);
 
         const formdata: FormData = new FormData();
         formdata.append("name", newCampaignName);
@@ -58,11 +73,10 @@ export default function Chat() {
                 console.log("Campaign created successfully");
                 fetchCampaigns(); // Reload campaigns after creation
                 setIsCreating(false);
-            })  
+            })
             .catch((error) => {
                 console.error("Error creating campaign: ", error);
             });
-        
     }
 
     function deleteCampaign(campaignId: string) {
@@ -83,8 +97,7 @@ export default function Chat() {
         if (editingCampaignId === null) {
             setEditingCampaignId(campaignId);
             setEditedCampaignName(currentName);
-        }
-        else {
+        } else {
             setEditingCampaignId(null);
             setEditedCampaignName("");
         }
@@ -162,7 +175,11 @@ export default function Chat() {
                                             <input
                                                 type='text'
                                                 value={editedCampaignName}
-                                                onChange={(e) => setEditedCampaignName(e.target.value)}
+                                                onChange={(e) =>
+                                                    setEditedCampaignName(
+                                                        e.target.value
+                                                    )
+                                                }
                                                 className='flex-1 border border-custom-border rounded-md overflow-x-auto p-2 text-custom-text-primary bg-custom-background-secondary focus:outline-none focus:ring-2 focus:ring-custom-accent'
                                             />
                                             <button
@@ -186,7 +203,12 @@ export default function Chat() {
                                         {/* Pencil Icon (Edit) */}
                                         <button
                                             className='text-custom-text-primary hover:text-custom-accent cursor-pointer'
-                                            onClick={() => startEditingCampaign(campaign.id, campaign.name)}
+                                            onClick={() =>
+                                                startEditingCampaign(
+                                                    campaign.id,
+                                                    campaign.name
+                                                )
+                                            }
                                             aria-label='Edit Campaign'
                                         >
                                             <svg
@@ -201,7 +223,11 @@ export default function Chat() {
                                                 strokeLinejoin='round'
                                                 className='icon icon-tabler icon-tabler-pencil'
                                             >
-                                                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                                <path
+                                                    stroke='none'
+                                                    d='M0 0h24v24H0z'
+                                                    fill='none'
+                                                />
                                                 <path d='M15 4l4 4l-11 11h-4v-4z' />
                                                 <path d='M13 6l4 4' />
                                             </svg>
@@ -209,7 +235,9 @@ export default function Chat() {
                                         {/* Bin Icon (Delete) */}
                                         <button
                                             className='text-custom-text-primary hover:text-custom-accent cursor-pointer'
-                                            onClick={() => deleteCampaign(campaign.id)}
+                                            onClick={() =>
+                                                deleteCampaign(campaign.id)
+                                            }
                                             aria-label='Delete Campaign'
                                         >
                                             <svg
@@ -224,7 +252,11 @@ export default function Chat() {
                                                 strokeLinejoin='round'
                                                 className='icon icon-tabler icon-tabler-trash-2'
                                             >
-                                                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
+                                                <path
+                                                    stroke='none'
+                                                    d='M0 0h24v24H0z'
+                                                    fill='none'
+                                                />
                                                 <path d='M3 6h18' />
                                                 <path d='M6 6v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2v-14' />
                                                 <path d='M9 10v6' />
@@ -236,8 +268,13 @@ export default function Chat() {
                                 </li>
                             ))
                         ) : (
-                            <p className='text-custom-text-secondary'>No campaigns available.</p>
-                        )}
+                                <div className='mb-4 p-2 italic rounded flex items-center justify-between'>
+                                    <span>
+                                        No campaigns available. Create a new one!
+                                    </span>
+                                </div>
+                        )
+                    }
                     </ul>
                 </div>
                 <div className='mt-6 bg-custom-background-primary p-4 rounded-md shadow-md'>
@@ -262,6 +299,17 @@ export default function Chat() {
                     </div>
                 </div>
             </div>
+            {error && (
+                <div
+                    key={error}
+                    className="fixed animate-slide-in-righ-to-left bottom-8 right-8 z-50"
+                    style={{ pointerEvents: "none" }}
+                >
+                    <div className='mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded flex items-center justify-between shadow-lg'>
+                        <span>{error}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
