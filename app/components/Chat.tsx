@@ -131,7 +131,7 @@ export default function Chat() {
                 Choose your Campaign
             </h1>
             <p className='text-custom-text-secondary mb-8'>
-                Select one of your available campaigns below to begin an
+                Select one of your available campaigns below to start an
                 immersive storytelling experience.
             </p>
             <div className='bg-custom-background-secondary border border-custom-border rounded-md p-4 relative'>

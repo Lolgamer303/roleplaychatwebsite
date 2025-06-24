@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import Google from "next-auth/providers/google";
+import Github, { GithubProfile } from "next-auth/providers/github"
 import prisma from "./app/lib/db";
 
 interface GoogleProfile {
@@ -22,6 +23,10 @@ export const options: NextAuthOptions = ({
                 }
             }
         }),
+        Github({
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        }),
     ],
     callbacks: {
         async signIn({ profile }) {
@@ -32,9 +37,13 @@ export const options: NextAuthOptions = ({
             if(!googleProfile) {
                 console.log("No Google Profile");
             }
-            if(!googleProfile) {
-                throw new Error("No profile")
+            const githubProfile = profile as unknown as GithubProfile
+            if(!githubProfile) {
+                console.log("No Github profile")
             }
+            if(!googleProfile && !githubProfile){
+                throw new Error("No OAuth Profile")
+            }    
             console.log(googleProfile);
             console.log(profile)
             await prisma.user.upsert({

@@ -7,8 +7,7 @@ export default function Home() {
       <Header pathname="/docs"/>
       <div className='mt-15'>
         <Documentation />
-      </div>
-      
+      </div>      
     </div>
   )
 }
